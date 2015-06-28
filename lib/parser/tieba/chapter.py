@@ -64,10 +64,4 @@ class ChapterParser:
             publish_time = datetime.strptime(date, '%Y-%m-%d %H:%M')
         except:
             publish_time = datetime.fromtimestamp(0)
-            print self.chapter.pageid
-            import traceback
-            traceback.print_exc()
         return publish_time
-
-    
-

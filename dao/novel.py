@@ -143,7 +143,7 @@ class NovelDAO(BaseDAO):
             filter(Chapter.novel_id==novel_id)
         count = query.count()
 
-        query = query.order_by(Chapter.publish_time, Chapter.create_time)
+        query = query.order_by(Chapter.pageid, Chapter.create_time)
 
         if page:
             offset = (page-1) * pagesize
