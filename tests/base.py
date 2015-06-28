@@ -1,16 +1,19 @@
 #encoding:utf-8
+from __future__ import absolute_import
 import copy
 import json
 from unittest import TestCase
 from urllib import urlencode
 import requests_mock
 
-from app import get_wsgi_app
-from config import FlaskConfig 
+from config import FlaskConfig, SQLALCHEMY_OPTIONS 
 from sqlalchemy.engine import engine_from_config
-from flask import g, template_rendered
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from flask import g, template_rendered
+
+from app import get_wsgi_app
+from tasks.celery import app as celery_app
 
 class BaseTestCase(TestCase):
     """
@@ -21,9 +24,10 @@ class BaseTestCase(TestCase):
 
     def setUp(self, **kwargs):
         super(BaseTestCase, self).setUp()
-        FlaskConfig.SQLALCHEMY_OPTIONS = {'url': 'mysql://root@localhost:3306/test_nobot?charset=utf8', 'echo': False}
-        #FlaskConfig.SQLALCHEMY_OPTIONS = {'url': 'mysql://root:123456@localhost:3306/nobot?charset=utf8', 'echo': False}
+        SQLALCHEMY_OPTIONS.update({'url': 'mysql://root@localhost:3306/test_nobot?charset=utf8', 'echo': False})
+#       SQLALCHEMY_OPTIONS.update({'url': 'mysql://root@localhost:3306/nobot?charset=utf8', 'echo': False})
         self.app = get_wsgi_app(FlaskConfig)
+        celery_app.DBSession = sessionmaker(self.app.sa_engine)
         self.app_context = self.app.test_request_context()
         self.app_context.push()
         self.app.config['TESTING'] = True
@@ -37,6 +41,7 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         super(BaseTestCase, self).tearDown()
         self.db.rollback()
+#       self.DB_TABLES = []
         for table_name in set(self.DB_TABLES):
             self.db.execute('DELETE FROM %s' %table_name)
             self.db.commit()
@@ -103,3 +108,10 @@ class BaseTestCase(TestCase):
             response = self.client.post(url, data=urlencode(params), headers=headers)
         return response
 
+    def _mock_tieba_response(self, mock, url, file_path):
+        """
+        mock 贴吧的请求
+        """
+        url = 'http://tieba.baidu.com' + url
+        text = file(file_path).read().decode('utf-8')
+        mock.get(url, status_code=200, text=text)

@@ -21,3 +21,13 @@ class ChapterParserTestCase(BaseTestCase):
         result, content = parser.execute()
         self.assertTrue(result)
         self.assertTrue(content)
+
+    def test_execute_2(self):
+        """
+        """
+        novel = self.db_add_novel(name=u'则添加', rule=u'')
+        chapter = self.db_add_chapter(title=u'测试', pageid=u'3848313003', novel_id=novel.id)
+        parser = ChapterParser(chapter)
+        result, content = parser.execute()
+        self.assertTrue(result)
+        self.assertTrue(content)

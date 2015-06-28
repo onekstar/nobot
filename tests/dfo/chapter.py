@@ -27,3 +27,10 @@ class ChapterDFO(BaseDFO):
         self.db.add(chapter)
         self.db.commit()
         return chapter 
+
+    def db_get_chapters_by_novel_id(self, novel_id):
+        """
+        根据novel_id 获取 chapter 列表
+        """
+        self.db.rollback()
+        return self.db.query(Chapter).filter(Chapter.novel_id==novel_id).all()

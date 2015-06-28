@@ -12,6 +12,6 @@ class Chapter(BaseModel):
     
     novel_id = Column(Integer, index=True, nullable=False)
     title = Column(Unicode(127), nullable=False, default=u'')
-    pageid = Column(Unicode(127), nullable=False)
+    pageid = Column(Unicode(127), nullable=False, unique=True)
     content = Column(Text, nullable=True)
     status = Column(SmallInteger, nullable=False, default=0)
