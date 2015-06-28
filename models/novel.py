@@ -1,4 +1,5 @@
 # encoding:utf-8
+from datetime import datetime
 from models.base import BaseModel
 from sqlalchemy import (Column, Integer, DateTime, SmallInteger, Unicode)
 
@@ -12,4 +13,4 @@ class Novel(BaseModel):
     name = Column(Unicode(127), nullable=False, index=True, unique=True)
     rule = Column(Unicode(1024), nullable=False, default=u'')
     is_deleted = Column(SmallInteger, default=0) 
-    last_sync_time = Column(DateTime, default=0, index=True)
+    last_sync_time = Column(DateTime, default=datetime.fromtimestamp(0), index=True, nullable=False)

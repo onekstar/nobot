@@ -33,6 +33,9 @@ class NovelDAO(BaseDAO):
         添加章节列表
         :task: 如果不为None，则为使用异步队列
         """
+        if novel.last_sync_time and (novel.last_sync_time > datetime.now() - timedelta(minutes=10)):
+            return False, u'【错误】更新过于频繁'
+
         novel.last_sync_time = datetime.now() 
         self.db.add(novel)
         self.db.commit()
@@ -98,10 +101,9 @@ class NovelDAO(BaseDAO):
                 continue
             parser = ChapterParser(chapter)
             try:
-                result, content = parser.execute()
+                result, chapter = parser.execute()
                 if not result:
                     continue
-                chapter.content = content
                 self.db.add(chapter)
             except:
                 self.logger.error('get chapter content error|%s|%s|%s|' %(self.novel.id, chapter.id, chapter.pageid), exc_info=1)
@@ -122,3 +124,29 @@ class NovelDAO(BaseDAO):
         novel = self.db.query(Novel).filter(Novel.last_sync_time<max_time).\
             order_by(Novel.last_sync_time, Novel.id.desc()).first()
         return novel
+
+    def get_contents(self, novel):
+        """
+        为下载获取content
+        """
+        rows = self.db.query(Chapter.id).filter(Chapter.novel_id==novel.id).all() #节约内存，只取ID
+            
+        for id in [r[0] for r in rows]:
+            chapter = self.db.query(Chapter).get(id)
+            yield chapter.content or u'本章内容暂缺'
+    
+    def get_chapter_list(self, novel_id, page=None, pagesize=None):
+        """
+        获取章节列表，支持分页
+        """
+        query = self.db.query(Chapter.id, Chapter.title, Chapter.publish_time, Chapter.pageid).\
+            filter(Chapter.novel_id==novel_id)
+        count = query.count()
+
+        query = query.order_by(Chapter.publish_time, Chapter.create_time)
+
+        if page:
+            offset = (page-1) * pagesize
+            query = query.limit(pagesize).offset(offset)
+
+        return count, query.all()

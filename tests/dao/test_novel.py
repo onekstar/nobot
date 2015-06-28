@@ -94,3 +94,17 @@ class NovelDAOTestCase(BaseTestCase):
         result = self.novel_dao.get_novel_need_sync()
         self.assertTrue(result)
 
+    def test_get_chapter_list(self):
+        """
+        测试获取章节列表
+        """
+        novel = self.db_add_novel(name=u'择天记', rule=u'^【择天记】.+第.+章.+$')
+        for pageid in range(1, 20):
+            chapter = self.db_add_chapter(
+                novel_id=novel.id,
+                pageid=unicode(pageid),
+                title=u'测试章节%s' %pageid,
+            )
+        count, chapter_list = self.novel_dao.get_chapter_list(novel.id, page=1, pagesize=10)
+        self.assertEqual(count, 20-1)
+        self.assertTrue(chapter_list)

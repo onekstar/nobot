@@ -18,9 +18,9 @@ class ChapterParserTestCase(BaseTestCase):
         novel = self.db_add_novel(name=u'则添加', rule=u'')
         chapter = self.db_add_chapter(title=u'【择天记】第一卷 第二百四十章 杂物间的大老鼠', pageid=u'3406030297', novel_id=novel.id)
         parser = ChapterParser(chapter)
-        result, content = parser.execute()
+        result, chapter = parser.execute()
         self.assertTrue(result)
-        self.assertTrue(content)
+        self.assertTrue(chapter.content)
 
     def test_execute_2(self):
         """
@@ -28,6 +28,6 @@ class ChapterParserTestCase(BaseTestCase):
         novel = self.db_add_novel(name=u'则添加', rule=u'')
         chapter = self.db_add_chapter(title=u'测试', pageid=u'3848313003', novel_id=novel.id)
         parser = ChapterParser(chapter)
-        result, content = parser.execute()
+        result, chapter = parser.execute()
         self.assertTrue(result)
-        self.assertTrue(content)
+        self.assertTrue(chapter.content)

@@ -1,4 +1,6 @@
 # encoding:utf-8
+from datetime import datetime, timedelta
+
 from tasks.celery import app
 
 from dao.novel import NovelDAO
@@ -17,6 +19,7 @@ def sync(id=None):
             novel = novel_dao.get_by_id(id)
         if not novel:
             return False, u'【错误】此小说不存在'
+
         result = novel_dao.add_chapters(novel, app.current_task)
         return result
     except:

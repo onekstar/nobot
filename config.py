@@ -26,6 +26,7 @@ class FlaskConfig(object):
     Flask app 配置
     """
     DEBUG = True
+    SECRET_KEY = u'j,*()PL<NERTYSD@#$%^'
 
 CeleryConfig.SQLALCHEMY_OPTIONS = FlaskConfig.SQLALCHEMY_OPTIONS = SQLALCHEMY_OPTIONS = {
     'url': 'mysql://root@localhost:3306/nobot?charset=utf8', 'echo': False

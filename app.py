@@ -14,6 +14,9 @@ from flask import Flask, g, _app_ctx_stack, current_app
 from sqlalchemy.engine import engine_from_config
 from sqlalchemy.orm import sessionmaker, scoped_session
 
+from views.novel import bp_novel
+from views.task import bp_task
+
 
 def _logger_init(logger_name, logger_path, logger_level, debug=False):
     """
@@ -43,7 +46,7 @@ def get_wsgi_app(config):
     app.DBSession = scoped_session(sessionmaker(bind=app.sa_engine),
                                    scopefunc=_app_ctx_stack.__ident_func__)
 
-    blueprints = []
+    blueprints = [bp_novel, bp_task]
     for bp in blueprints:
         app.register_blueprint(bp)
 
