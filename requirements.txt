@@ -1,0 +1,12 @@
+Flask==0.10.1
+SQLAlchemy==0.9.6
+MySQL-python==1.2.5
+gunicorn==19.1.1
+requests
+blinker
+redis
+gevent
+celery
+alembic
+requests-mock
+beautifulsoup4
