@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}创建{% endblock %}
+
+{% block body %}
+
+<div class="container center-div">
+    <form role="form" id='novel-form'>
+        <div class="form-group">
+            <label for="name-input">名称</label>
+            <input class="form-control" id="name-input" type="text" placeholder="例如：择天记">
+        </div>
+        <div class="form-groupp">
+            <label for="rule-input">规则：</label>
+            <input class="form-control" id="rule-input" type="text" placeholder="例如：^【择天记】.+第.+章.+$">
+        </div>
+        <br>
+        <button id='submit-button' type="button" class="btn btn-default">Submit</button>
+    </form>
+    <br>
+    <div class="alert alert-danger", id='error-alert'></div>
+    <div class="alert alert-info", id='info-alert'></div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var create_novel = function(name, rule){
+        $.ajax({
+            url: '/api/novel/add',
+            method: 'POST',
+            data: {name: $('#name-input').val(), rule: $('#rule-input').val()},
+            dataType: 'json',
+            success:function(data){
+                if (data.code != 0){
+                    show_error('创建失败：' + data.message);
+                    return;
+                } else {
+                    show_info('创建成功')
+                    novel = data.data
+                    window.location.href='/novel/read?id=' + novel.id;
+                }
+            },
+            error: function(xhr, status, e){
+                show_error('服务出现问题，请稍后重试！');
+            }
+        });
+    };
+    $(function(){
+        hide_alert();
+        $('#submit-button').click(function(){
+            hide_alert();
+            create_novel();
+        });
+    });
+</script>
+{% endblock %}

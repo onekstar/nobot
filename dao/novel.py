@@ -106,7 +106,7 @@ class NovelDAO(BaseDAO):
                     continue
                 self.db.add(chapter)
             except:
-                self.logger.error('get chapter content error|%s|%s|%s|' %(self.novel.id, chapter.id, chapter.pageid), exc_info=1)
+                self.logger.error('get chapter content error|%s|%s|%s|' %(novel.id, chapter.id, chapter.pageid), exc_info=1)
 
             # 设置进度
             p_count += 1
@@ -150,3 +150,10 @@ class NovelDAO(BaseDAO):
             query = query.limit(pagesize).offset(offset)
 
         return count, query.all()
+    
+    def search_novel(self, keyword):
+        """
+        搜索小说
+        """
+        query = self.db.query(Novel).filter(Novel.name==keyword)
+        return query.all()

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-4 col-lg-offset-4 center-div">
+        <p class="text-center">
+            <h1> 搜小说 </h1>
+        </p>
+        <div class="input-group  input-group-lg">
+            <input type="text" class="form-control" placeholder="小说名称，例如：择天记" id="keyword-input"/> 
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="search-btn">搜索!</button>
+            </span>
+        </div><!-- /input-group -->
+        <div class="alert alert-danger", id='error-alert'>
+        </div>
+    </div><!-- /.col-lg-4 -->
+</div><!-- /.row -->
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var search_novel = function(keyword){
+        $.ajax({
+            url: '/api/novel/search',
+            method: 'GET',
+            data: {keyword: keyword},
+            dataType: 'json',
+            success:function(data){
+                if (!data.data){
+                    show_error('没有搜索到小说【' + keyword + '】，去创建一个吧！');
+                    return;
+                }
+                novel = data.data[0]
+                window.location.href='/novel/read?id=' + novel.id;
+            },
+            error: function(xhr, status, e){
+                show_error('服务出现问题，请稍后重试！');
+            }
+        });
+    };
+    $(function(){
+        hide_alert();
+        $('#search-btn').click(function(){
+            hide_alert();
+            var keyword = $('#keyword-input').val()
+            search_novel(keyword);
+        });
+    });
+</script>
+{% endblock %}

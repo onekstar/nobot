@@ -102,3 +102,15 @@ class NovelViewTestCase(BaseTestCase):
         }
         result = self.json_get_request('/api/novel/chapter/list', params=params)
         self.assertEqual(result['code'], 0)
+        
+    def test_search_novel(self):
+        """
+        测试搜索小说
+        """
+        novel = self.db_add_novel(name=u'择天记', rule=u'^【择天记】.+第.+章.+$')
+        params = {
+            'keyword': u'择天记'
+        }
+        result = self.json_get_request('/api/novel/search', params=params)
+        self.assertEqual(result['code'], 0)
+        self.assertTrue(result['data'])

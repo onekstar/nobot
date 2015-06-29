@@ -3,7 +3,7 @@ from datetime import datetime
 from StringIO import StringIO
 from urllib import quote
 
-from flask import request, Blueprint, g, current_app, abort, Response
+from flask import request, Blueprint, g, current_app, abort, Response, render_template
 
 from views.base import api_response, _get_page_info
 
@@ -95,3 +95,20 @@ def get_chapter_list():
     } for c in chapter_list]
 
     return api_response(code=0, data={'count': count, 'list': c_list})
+
+@bp_novel.route('/api/novel/search', methods=['GET'])
+def search_novel():
+    keyword = request.args.get('keyword', '')
+    if not keyword:
+        return api_response(code=400, message=u'参数缺失')
+    novel_dao = NovelDAO(g.db, current_app.logger)
+    novels = novel_dao.search_novel(keyword)
+    novels = [novel.to_dict() for novel in novels]
+    return api_response(code=0, data=novels)
+
+@bp_novel.route('/novel/create', methods=['GET'])
+def get_craete_page():
+    """
+    获取创建页面
+    """
+    return render_template('novel-create.html')

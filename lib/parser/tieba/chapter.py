@@ -20,7 +20,7 @@ class ChapterParser:
     
     def _get_html(self):
         '获取html'
-        url = 'http://tieba.baidu.com/p/' + self.chapter.pageid
+        url = 'http://tieba.baidu.com/p/%s' %self.chapter.pageid
         response = requests.get(url)
         return response.text
     
