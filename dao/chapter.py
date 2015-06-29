@@ -30,8 +30,3 @@ class ChapterDAO(BaseDAO):
             next_ = next_.id
 
         return pre, chapter, next_
-
-
-
-        
-

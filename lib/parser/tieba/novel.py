@@ -47,7 +47,7 @@ class NovelParser():
             if not self.rule.match(title):
                 continue
             url = ele['href']
-            pageid = url.strip('/p/')
+            pageid = url.strip('/p/').split('?')[0]
             chapter = Chapter(
                 novel_id=self.novel.id,
                 title=title,
