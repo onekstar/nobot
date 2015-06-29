@@ -16,5 +16,5 @@
 - 基于Flask的API
 - 基于celery的任务调度，使用Redis作为Broker 和 Backend
 - 基于SQLAlchemy的ORM
-- 基于ExtJS的前端
+- 前端框架待定
 
