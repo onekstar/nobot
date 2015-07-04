@@ -15,7 +15,7 @@ class CeleryConfig(object):
 
     CELERYBEAT_SCHEDULE = {
         'sync-interval-seconds': {
-            'task': 'task.novel.sync',
+            'task': 'tasks.novel.sync',
             'schedule': timedelta(seconds=300),
             'args': ()
         }
